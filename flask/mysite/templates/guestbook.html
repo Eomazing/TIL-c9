@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Guest Book</h1>
+    <ul>
+        {% for m in messages %} <!-- messages라는 리스트가 딕셔너리 형태로 저장 -->
+            <li>{{ m.who }} - {{ m.message }}</li> <!-- 바로 key값을 불러 올 수 있음 -->
+        {% endfor %}
+    </ul>
+</body>
+</html>

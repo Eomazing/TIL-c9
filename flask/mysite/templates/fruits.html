@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    {% for f in fruits %} <!-- 화면에 출력되지 않음. 입력된 내용 반복됨 -->
+        <li>
+            {{ f }} <!-- 실제로 화면에 보이는 내용을 의미 -->
+        </li>
+    {% endfor %} <!-- 반복이 끝남을 의미함 -->
+    
+    
+</body>
+</html>
