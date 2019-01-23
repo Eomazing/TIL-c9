@@ -31,7 +31,7 @@ class User(db.Model):
 # flask db upgrade
 
 # 정리
-# Create
+# [Create]
 # INSERT INTO users (username, email) VALUES ('Amuse', 'amuse0701@gamil.com')
 # user = User(username='Amuse', email='amuse0701@gmail.com')
 # db.session.add(user)
@@ -65,3 +65,15 @@ class User(db.Model):
 
 # ORDER + LIMIT + OFFSET (ORDER 순서 상관 O, 나머지 순서 상관 X)
 # users = User.query.order_by(User.username).limit(1).offset(2).all()
+
+# [DELETE]
+# DELETE FROM users WHERE id=1;
+# user = User.query.get(1)
+# db.session.delete(user)
+# db.session.commit()
+
+# [UPDATE]
+# UPDATE users SET username='변경이름' WHERE id=2;
+# user = User.query.get(2)
+# user.username = '변경이름'
+# db.session.commit()
