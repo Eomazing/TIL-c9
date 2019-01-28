@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Post Index</h1>
+    <ul> <!-- li tag 는 ul tag 안에 위치해야 하기 때문에 ul tag 추가 -->
+    {% for post in posts %}
+        <li>{{ post.title }} - {{ post.content }}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
