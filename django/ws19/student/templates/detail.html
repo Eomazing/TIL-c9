@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Student Detail</h1>
+    <h2>Name : {{ student.name }}</h2>
+    <p>email : {{ student.email }}</p>
+    <p>birthday : {{ student.birthday }}</p>
+    <p>age : {{ student.age }}</p>
+    <a href="/student/">List</a> <!-- List로 돌아가는 링크 생성 '/'로 시작해야함-->
+    <a href="/student/{{ student.pk }}/edit/">Edit</a>
+    <a href="/student/{{ student.pk }}/delete">Delete</a>
+</body>
+</html>

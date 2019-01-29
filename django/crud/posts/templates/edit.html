@@ -7,12 +7,12 @@
     <title>Document</title>
 </head>
 <body>
-    <!--데이터를 어딘가로 보낼 때, form tag 사용-->
-    <form action="/posts/create/" method="post">
-        <!-- post method를 사용 할 때 추가해야 함 (보안상의 목적) -->
+    <h1>Post Edit</h1>
+    <!-- 변경사항을 실어서 update로 보냄, method는 post 방식 -->
+    <form action="/posts/{{post.pk}}/update/" method="post"> 
         {% csrf_token %}
-        <input type="text" name="title"/>
-        <input type="text" name="content"/>
+        <input type="text" name="title" value="{{ post.title }}"/>
+        <input type="text" name="content" value="{{ post.content }}"/>
         <input type="submit" value="Submit"/>
     </form>
 </body>
