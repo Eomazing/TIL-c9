@@ -13,5 +13,20 @@
     <a href="{% url 'posts:list' %}">List</a> <!-- List로 돌아가는 링크 생성 '/'로 시작해야함-->
     <a href="{% url 'posts:edit' post.pk %}">Edit</a>
     <a href="{% url 'posts:delete' post.pk %}">Delete</a>
+    
+    <hr>
+    
+    <form action="{% url 'posts:comments_create' post.pk %}" method="post">
+        {% csrf_token %}
+        Comment : <input type="text" name="content"/>
+        <input type="submit" value="Submit"/>
+    </form>
+    
+    <ul>
+        {% for comment in post.comment_set.all %}
+            <li>{{ comment.content }} - <a href="{% url 'posts:comments_delete' post.pk comment.pk %}">Delete</a></li>
+        {% endfor %}
+    </ul>
+    
 </body>
 </html>

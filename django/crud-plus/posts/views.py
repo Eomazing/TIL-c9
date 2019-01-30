@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Post
+from .models import Post, Comment
 # 현재폴더 안의 models 파일의 Post를 import 한다
 
 # Create your views here.
@@ -50,3 +50,23 @@ def update(request, post_id):
     post.save() # 값을 변경 완료하려면 반드시 입력
     
     return redirect('post:detail', post.pk)
+    
+    
+def comments_create(request, post_id):
+    # 댓글을 달 게시물 정보
+    post = Post.objects.get(pk=post_id)
+    
+    # 작성할(form에서 넘어온) 댓글 내용
+    content = request.POST.get('content')
+    
+    # 댓글 생성 및 저장
+    comment = Comment(post=post, content=content)
+    comment.save()
+    
+    return redirect('posts:detail', post.pk)
+    
+    # 삭제를 하고 요청을 처리해주기 때문에 render 대신 redirect 사용.
+def comments_delete(request, post_id, comment_id):
+    comment = Comment.objects.get(pk=comment_id)
+    comment.delete()
+    return redirect('posts:detail', post_id)
