@@ -10,4 +10,5 @@ urlpatterns = [
     path('create/', views.create),
     path('new/', views.new),
     path('', views.index),
+    # 뒤에만 '/' 추가해 주면 된다
 ]

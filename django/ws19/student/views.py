@@ -11,6 +11,7 @@ def index(request):
 def new(request):
     return render(request, 'new.html')
     
+    # new의 요청을 받는 페이지 create
 def create(request):
     name = request.POST.get('name')
     email = request.POST.get('email')
@@ -19,10 +20,10 @@ def create(request):
     
     student = Student(name=name, email=email, birthday=birthday, age=age)
     student.save()
+    # post 요청을 받기 때문에 redirect를 사용한다.
+    return redirect(f'/student/{student.pk}/')
     
-    return redirect(f'/student/{student.pk}')
-    
-def detail(request, student_id): # student의 id값을 넘겨 받는다
+def detail(request, student_id): # student의 id값을 넘겨 받는다.
     student = Student.objects.get(pk=student_id)
     return render(request, 'detail.html', {'student': student})
     

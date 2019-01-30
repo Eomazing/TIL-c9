@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Post Detail</h1>
+    <h2>Title : {{ post.title }}</h2>
+    <p>Content : {{ post.content }}</p>
+    <a href="{% url 'posts:list' %}">List</a> <!-- List로 돌아가는 링크 생성 '/'로 시작해야함-->
+    <a href="{% url 'posts:edit' post.pk %}">Edit</a>
+    <a href="{% url 'posts:delete' post.pk %}">Delete</a>
+</body>
+</html>

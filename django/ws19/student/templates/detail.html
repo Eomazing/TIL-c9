@@ -8,10 +8,12 @@
 </head>
 <body>
     <h1>Student Detail</h1>
-    <h2>Name : {{ student.name }}</h2>
-    <p>email : {{ student.email }}</p>
-    <p>birthday : {{ student.birthday }}</p>
-    <p>age : {{ student.age }}</p>
+    <ul>
+        <li>Name : {{ student.name }}</li>
+        <li>Email : {{ student.email }}</li>
+        <li>Birthday : {{ student.birthday }}</li>
+        <li>Age : {{ student.age }}</li>
+    </ul>
     <a href="/student/">List</a> <!-- List로 돌아가는 링크 생성 '/'로 시작해야함-->
     <a href="/student/{{ student.pk }}/edit/">Edit</a>
     <a href="/student/{{ student.pk }}/delete">Delete</a>
