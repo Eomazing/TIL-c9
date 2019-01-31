@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Post Detail</h1>
+    <img src="{{ post.image.url }}"></img>
+    <h2>Title : {{ post.title }}</h2>
+    <p>Content : {{ post.content }}</p>
+    <a href="{% url 'posts:list' %}">List</a> <!-- List로 돌아가는 링크 생성 '/'로 시작해야함-->
+    <a href="{% url 'posts:edit' post.pk %}">Edit</a>
+    <a href="{% url 'posts:delete' post.pk %}">Delete</a>
+    
+    <hr>
+    
+    <form action="{% url 'posts:comments_create' post.pk %}" method="post">
+        {% csrf_token %}
+        Comment : <input type="text" name="content"/>
+        <input type="submit" value="Submit"/>
+    </form>
+    
+    <ul>
+        {% for comment in post.comment_set.all %}
+            <li>{{ comment.content }} - <a href="{% url 'posts:comments_delete' post.pk comment.pk %}">Delete</a></li>
+        {% endfor %}
+    </ul>
+    
+</body>
+</html>
