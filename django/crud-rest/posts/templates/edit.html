@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block container%}
+    <h1>Post Edit</h1>
+    <!-- 변경사항을 실어서 update로 보냄, method는 post 방식 -->
+    <form method="post"> 
+        {% csrf_token %}
+        <input type="text" name="title" value="{{ post.title }}"/>
+        <input type="text" name="content" value="{{ post.content }}"/>
+        <input type="submit" value="Submit"/>
+    </form>
+{% endblock %}
