@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>New Article</h1>
+    
+    {{ form.non_field_errors }} <!-- login 기능 중, 로그인 실패 메시지 등 보여줄 때 사용 -->
+    <form method="post">
+        {% csrf_token %}
+        <!--아래 두 줄을 대신하기 위해서 forms.py 작성-->
+        <!--<input type="text" name="title" required/>-->
+        <!--<input type="text" name="content" required/>-->
+        <!-- (form ↓쪼개서 보여주기↓) customizing을 자유롭게 하기 위해 쪼갠다. -->
+        <!-- 1. title -->
+        <div>
+            {{ form.title.errors }} <!-- error messages (ul, li tag) -->
+            {{ form.title.label_tag }} <!-- label tag-->
+            {{ form.title }} <!-- input tag -->
+        </div>
+        <!-- 2. content -->
+        <div>
+            {{ form.content.errors }}
+            {{ form.content.label_tag }}
+            {{ form.content }}
+        </div>
+        
+        <!--{{ form }}-->
+        <input type="submit" value="Submit"/>
+    </form>
+    
+</body>
+</html>

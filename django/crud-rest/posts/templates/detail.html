@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block container%}
+
     <h1>Post Detail</h1>
     <img src="{{ post.image.url }}"></img>
     <h2>Title : {{ post.title }}</h2>
@@ -21,4 +22,5 @@
             <li>{{ comment.content }} - <a href="{% url 'posts:comments_delete' post.pk comment.pk %}">Delete</a></li>
         {% endfor %}
     </ul>
+    
 {% endblock %}
