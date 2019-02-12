@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block container%}
+
+    <!-- 데이터를 어딘가로 보낼 때, form tag 사용-->
+    <!-- enctype : multipart/form-data (binary 전송 가능) -->
+    <!--           application/x-www-form-urlencoded (기본 값) -->
+    <form method="post" enctype="multipart/form-data">
+        <!-- post method를 사용 할 때 추가해야 함 (보안상의 목적) -->
+        {% csrf_token %}
+        <input type="text" name="title"/>
+        <input type="text" name="content"/>
+        <input type="file" name="image" accept="image/*"/>
+        <input type="submit" value="Submit"/>
+    </form>
+    
+{% endblock %}
