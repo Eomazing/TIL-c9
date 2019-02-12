@@ -30,11 +30,11 @@ def login(request):
             auth_login(request, form.get_user()) 
             # 실제 로그인 정보가 저장되는 auth_login
             # form.get_user()데이터에 해당하는 User를 가져만 오는 역할.
-            return redirect('posts:list')
+            return redirect(request.GET.get('next') or 'posts:list')
     else:
         form = AuthenticationForm() # User가 존재하는지 검증하는 역할.
     
-    request.GET.get('next')
+    # request.GET.get('next') #=> /posts/new/
     return render(request, 'login.html', {'form': form})
     
 # Session Delete
