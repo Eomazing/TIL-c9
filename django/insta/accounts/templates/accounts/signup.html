@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block container %}
+
+<h1>회원 가입</h1>
+
+<form method="POST">
+    <!-- POST방식일 때, 추가해야 하는 것 잊지말자! -->
+    {% csrf_token %}
+    {{ signup_form }}
+    <input type="submit" value="Submit"/>
+</form>
+
+{% endblock %}

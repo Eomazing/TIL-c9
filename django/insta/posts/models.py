@@ -1,6 +1,7 @@
 from django.db import models
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
+from django.conf import settings
 
 # 추가적인 저장 공간
 def post_image_path(instance, filename): # instantce:받는 정보, 파일이름(upload 하는)
@@ -12,6 +13,8 @@ def post_image_path(instance, filename): # instantce:받는 정보, 파일이름
     
 # Create your models here.
 class Post(models.Model):
+    # 1:N 관계              # user table의 정보가 담겨있음(1), 1에 담겨있는 정보가 삭제되었을 때 N에 대한 처리법을 결정 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     # image = models.ImageField(blank=True)
     image = ProcessedImageField(

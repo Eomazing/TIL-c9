@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .forms import PostForm
 from .models import Post
 
 # Create your views here.
 def list(request):
     # models.py에 작성한 class Post의 모든 정보를 가지고 온다.
-    posts = Post.objects.all()
+    posts = Post.objects.order_by('-id').all()
     return render(request, 'posts/list.html', {'posts':posts})
 
 # 첫번째 함수 인자로는 request가 온다.
+@login_required
 def create(request):
     # POST 요청이라면 실제 DB에 data를 쓴다.
     if request.method == 'POST':
@@ -16,17 +18,22 @@ def create(request):
         post_form = PostForm(request.POST, request.FILES) # image 설정 후 FILES 추가
         # 들어온 data가 유효한 값인지 확인하고,
         if post_form.is_valid():
+            post = post_form.save(commit=False)
+            post.user = request.user
             # 저장한다.
-            post_form.save()
+            post_form.save() # 실제 데이터베이스에 저장
             # 저장되어 있는지 확인하는 페이지(list:만들 예정인 페이지)
             return redirect('posts:list')
     else:
         post_form = PostForm()
-    return render(request, 'posts/create.html', {'post_form': post_form})
+    return render(request, 'posts/form.html', {'post_form': post_form})
 
 # 게시글 업데이트    
 def update(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+    # post user와 로그인된 user가 다르다면, list로 redirect
+    if post.user != request.user:
+        return redirect('posts:list')
     # method가 POST인지 GET인지 구분해서 작동하게 만들어 준다.
     if request.method == 'POST':
         post_form = PostForm(request.POST, request.FILES, instance=post)
@@ -35,7 +42,7 @@ def update(request, post_id):
             return redirect('posts:list')
     else:
         post_form = PostForm(instance=post) # 키워드 parameter로 가져오게 되면 PostForm에 담겨서 보여진다.
-    return render(request, 'posts/create.html', {'post_form': post_form})
+    return render(request, 'posts/form.html', {'post_form': post_form})
 
 # 게시글을 삭제하기 
 def delete(request, post_id): # 추가적인 parameter 필요
@@ -43,6 +50,12 @@ def delete(request, post_id): # 추가적인 parameter 필요
     # post = Post.objects.get(id=post_id) # (pk=post_id) 동일한 결과
     # error를 발생시키지 않고 id가 없다는 것을 알려주므로 사용자 친화적
     post = get_object_or_404(Post, id=post_id) # 첫번째 인자 Post 모델
+    # 1번 방법
+    if post.user != request.user:
+        return redirect('posts:list')
     post.delete() # method이기 때문에 delete뒤에는 ()가 필요함
+    # 2번 방법
+    # if post.user == request.user:
+    #   post.delete()
     return redirect('posts:list')
     
