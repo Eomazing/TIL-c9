@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import PostForm
-from .models import Post
+from django.views.decorators.http import require_POST, require_http_methods
+from .forms import PostForm, CommentForm
+from .models import Post, Comment
 
 # Create your views here.
 def list(request):
     # models.py에 작성한 class Post의 모든 정보를 가지고 온다.
     posts = Post.objects.order_by('-id').all()
-    return render(request, 'posts/list.html', {'posts':posts})
+    comment_form = CommentForm()
+    return render(request, 'posts/list.html', {'posts':posts, 'comment_form':comment_form})
 
 # 첫번째 함수 인자로는 request가 온다.
 @login_required
@@ -28,7 +30,8 @@ def create(request):
         post_form = PostForm()
     return render(request, 'posts/form.html', {'post_form': post_form})
 
-# 게시글 업데이트    
+# 게시글 업데이트
+@login_required
 def update(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     # post user와 로그인된 user가 다르다면, list로 redirect
@@ -44,7 +47,8 @@ def update(request, post_id):
         post_form = PostForm(instance=post) # 키워드 parameter로 가져오게 되면 PostForm에 담겨서 보여진다.
     return render(request, 'posts/form.html', {'post_form': post_form})
 
-# 게시글을 삭제하기 
+# 게시글을 삭제하기
+@login_required
 def delete(request, post_id): # 추가적인 parameter 필요
     # 삭제할 특정 변수를 가져오기
     # post = Post.objects.get(id=post_id) # (pk=post_id) 동일한 결과
@@ -58,4 +62,37 @@ def delete(request, post_id): # 추가적인 parameter 필요
     # if post.user == request.user:
     #   post.delete()
     return redirect('posts:list')
+
+@login_required # 로그인이 되어있는지 아닌지 확인 먼저
+@require_POST # POST 요청만 받는다는 의미
+def comment_create(request, post_id): # post에 대한 정보를 가지고 와서 그 정보를 바탕으로 작업이 이루어 지기 때문에 post_id 필요
+    comment_form = CommentForm(request.POST)
+    if comment_form.is_valid():
+        comment = comment_form.save(commit=False)
+        comment.user = request.user
+        comment.post_id = post_id
+        comment.save()
+    return redirect('posts:list')
     
+@require_http_methods(['GET', 'POST'])
+def comment_delete(request, post_id, comment_id): # 두 개의 variable routing이 왔기때문에 순서에 맞춰 나열(urls.py 참조)
+    # 특정 댓글을 지우기 위해서는 comment_id를 이용해서 (객체를) 가지고 온다.
+    comment = get_object_or_404(Comment, id=comment_id)
+    
+    # 댓글을 지우기 전에 검증이 필요(작성 user와 로그인 user)
+    if comment.user != request.user:
+        return redirect('posts:list')
+        
+    comment.delete()
+    return redirect('posts:list')
+
+@login_required
+def like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.user in post.like_users.all():
+        # 2. 좋아요 취소
+        post.like_users.remove(request.user)
+    else:
+        # 1. 좋아요
+        post.like_users.add(request.user)
+    return redirect('posts:list')

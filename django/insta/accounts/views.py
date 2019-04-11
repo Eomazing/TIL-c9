@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 # 회원가입 만들기
@@ -43,3 +44,9 @@ def logout(request):
     auth_logout(request)
     # 로그아웃은 따로 페이지가 필요없으므로 redirect
     return redirect('posts:list')
+    
+def people(request, username): # urls.py 참조
+                            # method를 이용해 간접적으로 user model을 사용해야 수정이 용이함.
+    # get_user_model() => User
+    people = get_object_or_404(get_user_model(), username=username)
+    return render(request, 'accounts/people.html', {'people':people})

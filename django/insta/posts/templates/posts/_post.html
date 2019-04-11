@@ -1,10 +1,23 @@
-<div class="card" style="width: 18rem;">
+<div class="card mb-4" style="width: 18rem;">
   <div class="card-header">
-    <span>{{ post.user.username }}</span>
+    <a href="{% url 'people' post.user.username %}">{{ post.user.username }}</a>
   </div>
   {% if post.image %}
   <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.image }}">
   {% endif %}
+  <div class="card-body">
+      <a href="{% url 'posts:like' post.id %}">
+        {% if user in post.like_users.all %}
+          <i class="fas fa-heart" style="color:red"></i>
+        {% else%}
+          <i class="fas fa-heart-broken" style="color:hotpink"></i>
+        {% endif %}
+      </a>
+      <p class="card-text">
+        {{ post.like_users.count }}명이 좋아합니다.
+      </p>
+    </div>
+  </div>
   <div class="card-body">
     <h5 class="card-title">Card title</h5>
     <p class="card-text">{{ post.content }}</p>
@@ -12,5 +25,27 @@
     <a href="{% url 'posts:update' post.id %}" class="btn btn-info">Edit</a>
     <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger">Delete</a>
     {% endif %}
+  <div class="card-body">
+    {% for comment in post.comment_set.all %}
+      <div>
+        <strong>{{ comment.user.username }}</strong> {{ comment.content }}
+        {% if comment.user == user %}
+        <a href="{% url 'posts:comment_delete' post.id comment.id %}">삭제</a>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="card-text">댓글이 없습니다.</div>
+    {% endfor %}
   </div>
+  {% if user.is_authenticated %}
+  <form action="{% url 'posts:comment_create' post.id %}" method="POST">
+    {% csrf_token %}
+    <div class="input-group">
+      {{ comment_form }}
+      <div class="input-group-append">
+        <input type="submit" value="Submit" class="btn btn-warning"/>
+      </div>
+    </div>
+  </form>
+  {% endif %}
 </div>

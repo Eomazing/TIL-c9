@@ -14,6 +14,7 @@
         .fab {
           font-size: 28px;
           color: #9c47fc;
+          text-align: center;
           /*display: block;*/
           background: -webkit-linear-gradient(#ff6666 0%, #9933ff 100%);
           -webkit-background-clip: text;
@@ -24,7 +25,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#"><i class="fab fa-instagram grad" aria-hidden="true"></i> | Instagram</a>
+        <a class="navbar-brand" href="{% url 'posts:list' %}"><i class="fab fa-instagram grad" aria-hidden="true"></i> | Instagram</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -36,7 +37,7 @@
                     <a class="nav-link" href="{% url 'posts:create' %}">New Post <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">{{ user.username }}</a>
+                    <a class="nav-link" href="{% url 'people' user.username %}">{{ user.username }}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>

@@ -9,4 +9,7 @@ urlpatterns = [
     path('create/', views.create, name='create'),
     path('<int:post_id>/update/', views.update, name='update'), # 어떤 게시글을 수정할지 알아야 하기 때문에 <int:post_id> 필요
     path('<int:post_id>/delete/', views.delete, name='delete'), # <들어오게 될 변수의 type:변수의 이름(views.py에서 정의한 변수와 동일)>
+    path('<int:post_id>/comments/create/', views.comment_create, name='comment_create'),
+    path('<int:post_id>/comments/<int:comment_id>/delete/', views.comment_delete, name='comment_delete'),
+    path('<int:post_id>/like/', views.like, name='like'),
     ]

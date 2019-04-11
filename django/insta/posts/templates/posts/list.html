@@ -4,10 +4,14 @@
 
 <h1>Post List</h1>
 
+<div class="row">
 {% for post in posts %}
 
-{% include 'posts/_post.html' %}
+  <div class="col-sm-4">
+    {% include 'posts/_post.html' %}
+  </div>
 
 {% endfor %}
+</div>
 
 {% endblock %}

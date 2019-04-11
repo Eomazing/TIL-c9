@@ -23,3 +23,12 @@ class Post(models.Model):
             format='JPEG', # 저장 포맷
             options={'quality':90}, # 옵션
         )
+    # M:N 관계
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_posts')
+
+class Comment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # 1에 해당하는 내용 (N은 comment)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    content = models.TextField() # 댓글의 내용을 기록
+    
+    
