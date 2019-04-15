@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_http_methods
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, ImageFormSet
 from .models import Post, Comment
+from django.db import transaction
 
 # Create your views here.
 def list(request):
@@ -17,18 +18,29 @@ def create(request):
     # POST 요청이라면 실제 DB에 data를 쓴다.
     if request.method == 'POST':
         # 입력한 data가 request.POST에 있기때문에 같이 실린다.
-        post_form = PostForm(request.POST, request.FILES) # image 설정 후 FILES 추가
+        post_form = PostForm(request.POST)
+        image_formset = ImageFormSet(request.POST, request.FILES)
         # 들어온 data가 유효한 값인지 확인하고,
-        if post_form.is_valid():
+        if post_form.is_valid() and image_formset.is_valid():
             post = post_form.save(commit=False)
             post.user = request.user
-            # 저장한다.
-            post_form.save() # 실제 데이터베이스에 저장
+            
+            with transaction.atomic():
+                # 첫번째
+                post_form.save() # 실제 데이터베이스에 저장
+                # 두번째
+                image_formset.instance = post
+                image_formset.save() # 실제 데이터베이스에 저장
+            
             # 저장되어 있는지 확인하는 페이지(list:만들 예정인 페이지)
             return redirect('posts:list')
     else:
         post_form = PostForm()
-    return render(request, 'posts/form.html', {'post_form': post_form})
+        image_formset = ImageFormSet()
+    return render(request, 'posts/form.html', {
+                                        'post_form': post_form,
+                                        'image_formset' : image_formset,
+                                    })
 
 # 게시글 업데이트
 @login_required
@@ -39,13 +51,19 @@ def update(request, post_id):
         return redirect('posts:list')
     # method가 POST인지 GET인지 구분해서 작동하게 만들어 준다.
     if request.method == 'POST':
-        post_form = PostForm(request.POST, request.FILES, instance=post)
-        if post_form.is_valid():
+        post_form = PostForm(request.POST, instance=post)
+        image_formset = ImageFormSet(request.POST, request.FILES, instance=post)
+        if post_form.is_valid() and image_formset.is_valid():
             post_form.save()
+            image_formset.save()
             return redirect('posts:list')
     else:
         post_form = PostForm(instance=post) # 키워드 parameter로 가져오게 되면 PostForm에 담겨서 보여진다.
-    return render(request, 'posts/form.html', {'post_form': post_form})
+        image_formset = ImageFormSet(instance=post)
+    return render(request, 'posts/form.html', {
+                                        'post_form': post_form,
+                                        'image_formset': image_formset,
+                                    })
 
 # 게시글을 삭제하기
 @login_required

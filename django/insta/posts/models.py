@@ -17,14 +17,18 @@ class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     # image = models.ImageField(blank=True)
-    image = ProcessedImageField(
+    
+    # M:N 관계
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_posts')
+
+class Image(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE) # 1에 해당하는 내용 (N은 Image)
+    file = ProcessedImageField(
             upload_to=post_image_path, # 저장 위치 => 함수 호출
             processors=[ResizeToFill(600,600)], # 처리할 작업 목록
             format='JPEG', # 저장 포맷
             options={'quality':90}, # 옵션
         )
-    # M:N 관계
-    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_posts')
 
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # 1에 해당하는 내용 (N은 comment)

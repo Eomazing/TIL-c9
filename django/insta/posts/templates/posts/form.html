@@ -11,6 +11,7 @@
     <!-- post 방식을 사용할 때는 항상 csrf_token을 추가해준다!! -->
     {% csrf_token %}
     {% bootstrap_form post_form %}
+    {{ image_formset.as_p }}
     {% buttons %}
         <button type="submit" class="btn btn-primary">Submit</button>
     {% endbuttons %}
