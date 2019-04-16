@@ -127,3 +127,6 @@ STATIC_URL = '/static/'
 # Media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Auth User Model
+AUTH_USER_MODEL = 'accounts.User'

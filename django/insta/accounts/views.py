@@ -4,7 +4,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserChangeForm
+from .forms import CustomUserChangeForm, ProfileForm, CustomUserCreationForm
+from .models import Profile
 
 # Create your views here.
 # 회원가입 만들기
@@ -14,16 +15,17 @@ def signup(request):
         return redirect('posts:list')
     if request.method == 'POST':
         # user 정보를 가지고 와서 signup_form에 담는다.
-        signup_form = UserCreationForm(request.POST)
+        signup_form = CustomUserCreationForm(request.POST)
         # 중복되지 않고, 유효한 user 정보가 들어 왔다면,
         if signup_form.is_valid():
             user = signup_form.save()
+            Profile.objects.create(user=user) # User의 Profile 생성
             auth_login(request, user)
             # 우선적으로 list로 돌려보낸다.(아직 회원정보 페이지 등이 만들어지지 않았음)
             return redirect('posts:list')
     else:
         # GET 요청이 들어왔을 경우, 수정되는 내용
-        signup_form = UserCreationForm()
+        signup_form = CustomUserCreationForm()
     return render(request, 'accounts/signup.html', {'signup_form':signup_form})
 
 
@@ -89,3 +91,28 @@ def password(request):
     return render(request, 'accounts/password.html',{
                                 'password_change_form': password_change_form,
                                 })
+                                
+def profile_update(request):
+    profile = request.user.profile # user와 1:1로 연결된 profile을 가지고 profile 변수에 담아서 사용한다.
+    if request.method == 'POST': # 원하는 정보를 담아서 보내는 행위는 POST 요청
+    # () 안의 내용을 담아서 (nickname, intro/ image file/ instance=profile에 담는다는 의미)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect('people', request.user.username)
+    else: # 주소창으로 주소를 입력하는 GET요청으로 접근한다면, 단순히 정보를 보여주기만 한다.
+        profile_form = ProfileForm(instance=profile)
+    return render(request, 'accounts/profile_update.html',{
+                                            'profile_form': profile_form,
+                                        })
+                                        
+def follow(request, user_id):
+    # 어떤 사람을 follow 할 것인지
+    followee = get_object_or_404(get_user_model(), id=user_id)
+    if request.user in followee.followers.all():
+        # 2. followee를 unfollw 하기
+        followee.followers.remove(request.user)
+    else:
+        # 1. followee를 follow 하기
+        followee.followers.add(request.user)
+    return redirect('people', followee.username) # 다시 user 페이지로 갈 수 있도록
