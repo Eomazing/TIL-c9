@@ -108,7 +108,13 @@ def comment_create(request, post_id): # post에 대한 정보를 가지고 와�
         comment.user = request.user
         comment.post_id = post_id
         comment.save()
-    return redirect('posts:list')
+    # return redirect('posts:list')
+    return JsonResponse({
+                            'id': comment.id, 
+                            'postId': post_id, 
+                            'username': comment.user.username,
+                            'content': comment.content,
+                        })
     
 @require_http_methods(['GET', 'POST'])
 def comment_delete(request, post_id, comment_id): # 두 개의 variable routing이 왔기때문에 순서에 맞춰 나열(urls.py 참조)

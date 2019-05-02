@@ -36,27 +36,26 @@
       </p>
   </div>
   <div class="card-body">
-    <h5 class="card-title">Card title</h5>
     <p class="card-text">{{ post.content }}</p>
     {% if post.user == user %}
     <a href="{% url 'posts:update' post.id %}" class="btn btn-info">Edit</a>
     <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger">Delete</a>
     {% endif %}
   </div>
-  <div class="card-body">
+  <div class="card-body" id="comment-list-{{ post.id }}">
     {% for comment in post.comment_set.all %}
-      <div>
+      <div class="card-text">
         <strong>{{ comment.user.username }}</strong> {{ comment.content }}
         {% if comment.user == user %}
         <a href="{% url 'posts:comment_delete' post.id comment.id %}">삭제</a>
         {% endif %}
       </div>
     {% empty %}
-      <div class="card-text">댓글이 없습니다.</div>
+      <!--<div class="card-text">댓글이 없습니다.</div>-->
     {% endfor %}
   </div>
   {% if user.is_authenticated %}
-  <form action="{% url 'posts:comment_create' post.id %}" method="POST">
+  <form action="{% url 'posts:comment_create' post.id %}" method="POST" class="comment-form">
     {% csrf_token %}
     <div class="input-group">
       {{ comment_form }}

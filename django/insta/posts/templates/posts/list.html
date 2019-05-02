@@ -35,6 +35,35 @@
     })
   })
 
+  const commentForms = document.querySelectorAll('.comment-form') // 댓글 쓰는 창이 여러개이기 때문에 All로 불러온다.
+  commentForms.forEach(function(form){
+    form.addEventListener('submit', function(event){ // 각 form마다 EventListener을 붙여준다.
+    // 'submit' => form tag만 가지고 있는 trigger
+      event.preventDefault()
+      console.log(event)
+      // event.target === form
+      const data = new FormData(event.target)
+      // Inspect FormData
+      for (const item of data.entries()){
+        console.log(item)
+      }
+      // form tag가 가지고있는 action의 값을 가지고 온다. (text를 그대로 가지고 온다는 의미-개발자도구 참조)
+      axios.post(event.target.action, data) // form(입력 창)에 입력한 내용을 가지고 온다.
+          .then(function(response){
+            const comment = response.data
+            // 동적으로 변하는 부분이기 때문에 ()안을 backtick` 으로 감싸준다.
+            const commentList = document.querySelector(`#comment-list-${comment.postId}`)
+            const newComment = `<div class="card-text">
+                <strong>${comment.username}</strong> ${comment.content}
+                <a href="/posts/${comment.postId}/comments/${comment.id}/delete/">삭제</a>
+              </div>`
+            commentList.insertAdjacentHTML('beforeend', newComment)
+            // 댓글 작성 후 입력창에 그대로 입력내용이 남는 것을 수정
+            event.target.reset()
+          })
+    })  
+  })
+  
 </script>
 
 {% endblock %}
